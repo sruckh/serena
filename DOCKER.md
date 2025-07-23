@@ -34,17 +34,13 @@ Docker support allows you to run Serena in an isolated container environment, wh
 
 ### 4. Dashboard Port Configuration
 
-The web dashboard runs on port 24282 (0x5EDA) by default. You can configure this using environment variables:
+The web dashboard runs on port 24282 (0x5EDA) by default. Services are configured to communicate on the internal Docker network (`shared_net`) and do not expose ports to localhost for security.
 
-```bash
-# Use default ports
-docker-compose up serena
+To access the dashboard from other containers on the same network:
+- Use the service name (`serena` or `serena-dev`) and port 24282
+- Example: `http://serena:24282/dashboard` from another container
 
-# Use custom ports
-SERENA_DASHBOARD_PORT=8080 docker-compose up serena
-```
-
-⚠️ **Note**: If the local port is occupied, you'll need to specify a different port using the environment variable.
+For development access, you can modify the compose file to expose ports to localhost by adding a `ports` section, but this is not recommended for production deployments.
 
 ### 5. Line Ending Issues on Windows
 
@@ -67,6 +63,16 @@ SERENA_DASHBOARD_PORT=8080 docker-compose up serena
    ```bash
    docker-compose up serena-dev
    ```
+
+### Network Configuration
+
+Both services are configured to communicate on the internal Docker network (`shared_net`) and do not expose ports to localhost. To access the services from other containers on the same network, use the service name and port:
+
+- Service name: `serena` or `serena-dev`
+- MCP server port: 9121
+- Dashboard port: 24282
+
+Services are accessible within the Docker network but not from the host machine for security.
 
 ### Using Docker directly
 
@@ -91,7 +97,16 @@ Once running, access the web dashboard at:
 
 ## Volume Mounting
 
-To work with projects, you must mount them as volumes:
+The Docker configuration includes volume mounts for common directories:
+
+```yaml
+# Default volume mounts (automatically included)
+volumes:
+  - /opt/docker:/opt/docker
+  - /mnt/backblaze:/mnt/backblaze
+```
+
+To work with additional projects, you can add more volume mounts:
 
 ```yaml
 # In compose.yaml
@@ -99,6 +114,8 @@ volumes:
   - ./my-project:/workspace/my-project
   - /path/to/another/project:/workspace/another-project
 ```
+
+The `/opt/docker` and `/mnt/backblaze` directories are automatically mounted to provide access to common project locations and storage.
 
 ## Environment Variables
 
