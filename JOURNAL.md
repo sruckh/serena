@@ -1,5 +1,29 @@
 # Engineering Journal
 
+## 2025-07-23 22:30
+
+### Fixed Docker Network Configuration Issue |TASK:TASK-2025-07-23-003|
+- **What**: Fixed Docker Compose network configuration to use existing shared_net instead of creating isolated serena_shared_net network
+- **Why**: Container was isolated on its own network and couldn't communicate with other containers in the ecosystem
+- **How**: 
+  - Updated compose.yaml to use external shared_net network instead of creating a new one
+  - Added project name to compose file for consistent naming
+  - Changed network configuration to use `external: true` for shared_net
+- **Issues**: Network connectivity issues preventing inter-container communication
+- **Result**: Container now connects to shared_net network and can communicate with other services
+
+## 2025-07-23 22:00
+
+### Fixed Docker Network Isolation Issue |TASK:TASK-2025-07-23-002|
+- **What**: Fixed network isolation issue where Serena container was creating its own network instead of joining the existing shared_net network
+- **Why**: Container was isolated on serena_shared_net network and couldn't communicate with other containers in the ecosystem
+- **How**: 
+  - Updated compose.yaml to use external shared_net network instead of creating a new one
+  - Added project name to compose file for consistent naming
+  - Changed network configuration to use `external: true` for shared_net
+- **Issues**: Network connectivity issues preventing inter-container communication
+- **Result**: Container now connects to shared_net network and can communicate with other services
+
 ## 2025-07-23 21:00
 
 ### Fixed Docker Container Exit Issue |TASK:TASK-2025-07-23-001|
