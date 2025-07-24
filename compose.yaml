@@ -2,7 +2,7 @@ name: serena
 
 services:
   serena:
-    image: ghcr.io/oraios/serena:latest 
+    image: ghcr.io/oraios/serena:latest
     build:
       context: ./
       dockerfile: Dockerfile
@@ -15,10 +15,11 @@ services:
       - "9121"  # MCP server port
       - "24282"  # Dashboard port
     volumes:
+      - .:/workspaces/serena
       - /opt/docker:/opt/docker
       - /mnt/backblaze:/mnt/backblaze
     command:
-      - "uv run --directory /workspaces/serena serena-mcp-server --transport stdio"
+      - "uv run --directory /workspaces/serena serena-mcp-server --transport sse --host 0.0.0.0 --port 9121"
     stdin_open: true
     tty: true
 
