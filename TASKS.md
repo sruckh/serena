@@ -16,14 +16,16 @@
 ### Task Context
 <!-- Fix MCP server and web monitoring dashboard access through Nginx Proxy Manager -->
 - **Previous Work**: Fix Docker network configuration issue
-- **Key Files**: compose.yaml, JOURNAL.md
+- **Key Files**: compose.yaml, src/serena/dashboard.py, src/serena/agent.py, JOURNAL.md
 - **Environment**: Docker deployment environment with Nginx Proxy Manager
 - **Next Steps**: Verify MCP server and dashboard accessibility through Nginx Proxy Manager
 
 ### Findings & Decisions
 - **FINDING-001**: MCP server was running in stdio mode instead of sse mode, preventing web access
 - **DECISION-001**: Change transport mode to sse and add explicit host/port parameters for web accessibility
-- **FINDING-002**: Ports need to be exposed on Docker network for Nginx Proxy Manager access without exposing to host
+- **FINDING-002**: Dashboard was binding to 127.0.0.1 instead of 0.0.0.0, preventing access from other containers
+- **DECISION-002**: Modify dashboard to bind to 0.0.0.0 and update URL construction
+- **FINDING-003**: Ports need to be exposed on Docker network for Nginx Proxy Manager access without exposing to host
 
 ### Task Chain
 1. ✅ Fix Docker container exit issue (TASK-2025-07-23-001)

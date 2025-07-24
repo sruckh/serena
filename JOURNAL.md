@@ -2,6 +2,33 @@
 
 ## 2025-07-24
 
+### 07:30 - Fix Dashboard Network Binding Issue
+**Task**: TASK-2025-07-24-001  
+**Files Modified**: src/serena/dashboard.py, src/serena/agent.py  
+**Status**: COMPLETE
+
+**Context**:
+After rebuilding and restarting the container, the user reported that the URLs were still not accessible. Further investigation revealed that while the dashboard was started with the correct host (0.0.0.0), the `run_in_thread` method in the dashboard implementation was not passing the host parameter to the `run` method, causing it to default to 127.0.0.1. Additionally, the URL construction in the agent was still using 127.0.0.1.
+
+**Actions Taken**:
+1. **Modified dashboard.py**: Updated the `run_in_thread` method to accept a host parameter and pass it to the `run` method.
+2. **Modified agent.py**: Updated the call to `run_in_thread` to pass "0.0.0.0" as the host parameter and updated the URL construction to use "0.0.0.0" instead of "127.0.0.1".
+
+**Technical Details**:
+- Modified `SerenaDashboardAPI.run_in_thread` to accept a `host` parameter with a default value of "0.0.0.0"
+- Updated the thread target to pass both the host and port to the `run` method
+- Modified `SerenaAgent.__init__` to pass "0.0.0.0" as the host parameter to `run_in_thread`
+- Updated the dashboard URL construction to use "0.0.0.0" instead of "127.0.0.1"
+
+**Verification**:
+- Container now starts correctly with the dashboard binding to 0.0.0.0
+- Dashboard is accessible from other containers on the Docker network
+- User confirmed that the dashboard is now accessible
+
+**Next Steps**:
+1. Monitor for any additional connectivity issues
+2. Document any further adjustments needed
+
 ### 05:50 - Fix MCP Server and Web Monitoring Dashboard Access
 **Task**: TASK-2025-07-24-001  
 **Files Modified**: compose.yaml  
@@ -15,7 +42,7 @@ The MCP server at https://serena.gemneye.info and web monitoring dashboard at ht
 
 2. **Added Host and Port Parameters**: Added explicit `--host 0.0.0.0` and `--port 9121` parameters to the command to ensure the MCP server binds to the correct interface and port.
 
-3. **Maintained Proper Port Exposure**: Kept the `expose` directive for ports 9121 (MCP server) and 24282 (dashboard) so they remain accessible on the Docker network for Nginx Proxy Manager, without exposing them to the host machine's ports as per the security requirements.
+3. **Maintained Proper Port Exposure**: Kept the `expose` directive for ports 9121 (MCP server) and 24282 (dashboard) so they remain accessible on the Docker network for Nginx Proxy Manager, without exposing them to the host machine as per the security requirements.
 
 **Technical Details**:
 - The previous configuration used `--transport stdio` which only allows direct process communication, not web-based access

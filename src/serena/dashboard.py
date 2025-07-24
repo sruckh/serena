@@ -155,8 +155,8 @@ class SerenaDashboardAPI:
         self._app.run(host=host, port=port, debug=False, use_reloader=False, threaded=True)
         return port
 
-    def run_in_thread(self) -> tuple[threading.Thread, int]:
+    def run_in_thread(self, host: str = "0.0.0.0") -> tuple[threading.Thread, int]:
         port = self._find_first_free_port(0x5EDA)
-        thread = threading.Thread(target=lambda: self.run(port=port), daemon=True)
+        thread = threading.Thread(target=lambda: self.run(host=host, port=port), daemon=True)
         thread.start()
         return thread, port

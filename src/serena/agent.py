@@ -165,8 +165,8 @@ class SerenaAgent:
         if self.serena_config.web_dashboard:
             self._dashboard_thread, port = SerenaDashboardAPI(
                 get_memory_log_handler(), tool_names, tool_usage_stats=self._tool_usage_stats
-            ).run_in_thread()
-            dashboard_url = f"http://127.0.0.1:{port}/dashboard/index.html"
+            ).run_in_thread(host="0.0.0.0")
+            dashboard_url = f"http://0.0.0.0:{port}/dashboard/index.html"
             log.info("Serena web dashboard started at %s", dashboard_url)
             if self.serena_config.web_dashboard_open_on_launch:
                 # open the dashboard URL in the default web browser (using a separate process to control
